@@ -4,13 +4,19 @@ import { FilesService } from './files.service';
 import { FileRecord } from './files.entity';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { RmqModule } from '@app/common';
+import * as path from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', 'static'),
+      serveRoot: '/static',
     }),
     RmqModule,
     TypeOrmModule.forRoot({

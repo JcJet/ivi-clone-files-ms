@@ -21,14 +21,15 @@ export class FilesService {
         fs.mkdirSync(filePath, { recursive: true });
       }
 
-      const buffer: Buffer = Buffer.from(Array<number>(file.buffer.data));
-      await fs.writeFile(path.join(filePath, fileName), buffer, (err) => {
+      const buffer: Buffer = new Buffer(file.buffer.data);
+      fs.writeFile(path.join(filePath, fileName), buffer, (err) => {
         if (err) throw err;
       });
 
       await this.filesRepository.insert({ ...dto, fileName });
       return fileName;
     } catch (e) {
+      throw e;
       throw new HttpException(
         'Произошла ошибка при записи файла',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -72,7 +73,7 @@ export class FilesService {
   }
 
   async deleteFiles(dto: FileDto): Promise<any> {
-    //TODO: test it
+    console.log(dto);
     const deleteResult = await this.filesRepository
       .createQueryBuilder('files')
       .delete()
