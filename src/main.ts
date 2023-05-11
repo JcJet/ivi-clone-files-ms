@@ -1,15 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { FilesModule } from './files.module';
-import { RmqService } from "@app/common";
-import { ConfigService } from "@nestjs/config";
+import { ConfigService } from '@nestjs/config';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(FilesModule);
-  const rmqService = app.get<RmqService>(RmqService);
-  app.connectMicroservice(rmqService.getOptions('FILES', true));
+  const configService = app.get(ConfigService);
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.get('RABBIT_MQ_URI')],
+      queue: 'toFilesMs',
+      queueOptions: {
+        durable: false,
+      },
+    },
+  });
   await app.startAllMicroservices();
 
-  const configService = app.get(ConfigService);
   await app.listen(configService.get('PORT'));
 }
 bootstrap();
