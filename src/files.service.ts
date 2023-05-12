@@ -58,8 +58,8 @@ export class FilesService {
   async getFile(dto: FileDto) {
     const fileRecord = await this.filesRepository
       .createQueryBuilder('files')
-      .where('files.essenceTable = :essenceTable', dto)
-      .andWhere('files.essenceId = :essenceId', dto)
+      .where('ivi-clone-files-ms.essenceTable = :essenceTable', dto)
+      .andWhere('ivi-clone-files-ms.essenceId = :essenceId', dto)
       .getOne();
     return fileRecord ? fileRecord.fileName : undefined;
   }
@@ -67,8 +67,8 @@ export class FilesService {
     //const all = await this.commentsRepository.find();
     return await this.filesRepository
       .createQueryBuilder('files')
-      .where('files.essenceTable = :essenceTable', dto)
-      .andWhere('files.essenceId = :essenceId', dto)
+      .where('ivi-clone-files-ms.essenceTable = :essenceTable', dto)
+      .andWhere('ivi-clone-files-ms.essenceId = :essenceId', dto)
       .getMany();
   }
 

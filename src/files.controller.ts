@@ -3,6 +3,7 @@ import { FilesService } from './files.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { FileDto } from './dto/file.dto';
 import { FileRecord } from './files.entity';
+import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 @Controller()
 export class FilesController {
