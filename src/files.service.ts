@@ -29,7 +29,6 @@ export class FilesService {
       await this.filesRepository.insert({ ...dto, fileName });
       return fileName;
     } catch (e) {
-      throw e;
       throw new HttpException(
         'Произошла ошибка при записи файла',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -55,36 +54,18 @@ export class FilesService {
     }
     return deletionResult;
   }
-  async getFile(dto: FileDto) {
-    const fileRecord = await this.filesRepository
-      .createQueryBuilder('files')
-      .where('ivi-clone-files-ms.essenceTable = :essenceTable', dto)
-      .andWhere('ivi-clone-files-ms.essenceId = :essenceId', dto)
-      .getOne();
-    return fileRecord ? fileRecord.fileName : undefined;
-  }
   async getFiles(dto: FileDto) {
-    //const all = await this.commentsRepository.find();
-    return await this.filesRepository
-      .createQueryBuilder('files')
-      .where('ivi-clone-files-ms.essenceTable = :essenceTable', dto)
-      .andWhere('ivi-clone-files-ms.essenceId = :essenceId', dto)
-      .getMany();
+    return await this.filesRepository.findBy({ ...dto });
   }
 
   async deleteFiles(dto: FileDto): Promise<any> {
     console.log(dto);
-    const deleteResult = await this.filesRepository
-      .createQueryBuilder('files')
-      .delete()
-      .where('essenceTable = :essenceTable', dto)
-      .andWhere('essenceId = :essenceId', dto)
-      .returning('*')
-      .execute();
+    const fileNames = await this.getFiles(dto);
+    await this.filesRepository.delete({ ...dto });
 
     const filePath = path.resolve(__dirname, '..', 'static');
-    for (let i = 0; i < deleteResult.raw.length; i++) {
-      const fileName = deleteResult.raw[i].fileName;
+    for (let i = 0; i < fileNames.length; i++) {
+      const fileName = fileNames[i].fileName;
       try {
         fs.rm(path.join(filePath, fileName), () => {});
       } catch (e) {
@@ -94,7 +75,6 @@ export class FilesService {
         );
       }
     }
-
-    return deleteResult.raw;
+    return fileNames;
   }
 }
