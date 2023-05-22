@@ -8,7 +8,7 @@ RUN npm i
 
 EXPOSE 3002
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start:docker"]
 
 FROM node:alpine as production
 

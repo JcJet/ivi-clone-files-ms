@@ -7,18 +7,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 
-const databaseHost = process.env.DB_HOST || 'localhost';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
+      //isGlobal: true,
+      envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '..', 'static'),
       serveRoot: '/static',
     }),
-    TypeOrmModule.forRoot({
+/*    TypeOrmModule.forRoot({
       type: 'postgres',
       host: databaseHost,
       port: 5432,
@@ -27,8 +26,8 @@ const databaseHost = process.env.DB_HOST || 'localhost';
       database: 'files',
       entities: [FileRecord],
       synchronize: true,
-    }),
-    /*TypeOrmModule.forRoot({
+    }),*/
+    TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
       port: Number(process.env.POSTGRES_PORT),
@@ -37,7 +36,7 @@ const databaseHost = process.env.DB_HOST || 'localhost';
       database: process.env.POSTGRES_DB,
       entities: [FileRecord],
       synchronize: true,
-    }),*/
+    }),
     TypeOrmModule.forFeature([FileRecord]),
   ],
   controllers: [FilesController],
