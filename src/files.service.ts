@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as uuid from 'uuid';
+import { logCall } from "./decorators/logging-decorator";
 
 @Injectable()
 export class FilesService {
@@ -40,7 +41,7 @@ export class FilesService {
     const fileUpdateResult = await this.filesRepository.update(id, dto);
     return fileUpdateResult;
   }*/
-
+  @logCall()
   async deleteFile(fileName: string): Promise<any> {
     const deletionResult = await this.filesRepository.delete({ fileName });
     const filePath = path.resolve(__dirname, '..', 'static');
@@ -57,7 +58,7 @@ export class FilesService {
   async getFiles(dto: FileDto) {
     return await this.filesRepository.findBy({ ...dto });
   }
-
+  @logCall()
   async deleteFiles(dto: FileDto): Promise<any> {
     console.log(dto);
     const fileNames = await this.getFiles(dto);
