@@ -1,10 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import {Controller, Get, UseFilters} from '@nestjs/common';
 import { FilesService } from './files.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { FileDto } from './dto/file.dto';
 import { FileRecord } from './files.entity';
 import { DeleteResult } from 'typeorm';
+import { HttpExceptionFilter } from './http-exception.filter';
 
+@UseFilters(new HttpExceptionFilter())
 @Controller()
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
