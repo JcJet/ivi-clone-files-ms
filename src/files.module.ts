@@ -10,23 +10,12 @@ import * as path from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      //isGlobal: true,
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '..', 'static'),
       serveRoot: '/static',
     }),
-/*    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: databaseHost,
-      port: 5432,
-      username: 'admin',
-      password: 'admin',
-      database: 'files',
-      entities: [FileRecord],
-      synchronize: true,
-    }),*/
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,

@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FileRecord } from './files.entity';
 import { FileDto } from './dto/file.dto';
-import { Repository } from 'typeorm';
+import {DeleteResult, Repository} from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as uuid from 'uuid';
-import { logCall } from "./decorators/logging-decorator";
+import { logCall } from './decorators/logging-decorator';
 
 @Injectable()
 export class FilesService {
@@ -16,8 +16,8 @@ export class FilesService {
   ) {}
   async createFile(file, dto: FileDto): Promise<string> {
     try {
-      const fileName = uuid.v4() + '.jpg';
-      const filePath = path.resolve(__dirname, '..', 'static');
+      const fileName: string = uuid.v4() + '.jpg';
+      const filePath: string = path.resolve(__dirname, '..', 'static');
       if (!fs.existsSync(filePath)) {
         fs.mkdirSync(filePath, { recursive: true });
       }
@@ -37,12 +37,8 @@ export class FilesService {
     }
   }
 
-  /*  async editFile(id: number, dto: FileDto): Promise<any> {
-    const fileUpdateResult = await this.filesRepository.update(id, dto);
-    return fileUpdateResult;
-  }*/
   @logCall()
-  async deleteFile(fileName: string): Promise<any> {
+  async deleteFile(fileName: string): Promise<DeleteResult> {
     const deletionResult = await this.filesRepository.delete({ fileName });
     const filePath = path.resolve(__dirname, '..', 'static');
     try {
@@ -59,7 +55,7 @@ export class FilesService {
     return await this.filesRepository.findBy({ ...dto });
   }
   @logCall()
-  async deleteFiles(dto: FileDto): Promise<any> {
+  async deleteFiles(dto: FileDto): Promise<FileRecord[]> {
     console.log(dto);
     const fileNames = await this.getFiles(dto);
     await this.filesRepository.delete({ ...dto });
